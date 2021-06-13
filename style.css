@@ -2155,6 +2155,10 @@ section.woocommerce-order-details > table.woocommerce-table.woocommerce-table--c
     width: 100% !important;
 }
 
+.payment_method_cod .payment_box {
+    visibility: hidden;
+}
+
 /* Sklep page */
 .products {
     display: flex;

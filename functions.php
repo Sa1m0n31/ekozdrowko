@@ -183,6 +183,33 @@ function zdrowko_add_baner_post_type() {
 
 add_action("init", "zdrowko_add_baner_post_type");
 
+/* Add oplaty za wage post type */
+function zdrowko_add_weight_post_type() {
+    $supports = array(
+        'title'
+    );
+
+    $labels = array(
+        'name' => 'Opłaty za wagę'
+    );
+
+    $args = array(
+        'labels'               => $labels,
+        'supports'             => $supports,
+        'public'               => true,
+        'capability_type'      => 'post',
+        'rewrite'              => array( 'slug' => '' ),
+        'has_archive'          => true,
+        'menu_position'        => 30,
+        'menu_icon'            => 'dashicons-editor-paste-word'
+    );
+
+    register_post_type("weight", $args);
+}
+
+add_action("init", "zdrowko_add_weight_post_type");
+
+
 /* Add on 14.03 */
 add_shortcode( 'stock_status', 'display_product_stock_status' );
 function display_product_stock_status( $atts) {
@@ -319,16 +346,8 @@ function get_page_by_slug($page_slug, $output = OBJECT, $post_type = 'page' ) {
     return ($page ? get_post($page, $output) : NULL);
 }
 
-//function modify_product_cat_query( $query ) {
-//    $query->set('posts_per_page', 30);
-//}
-//add_action( 'pre_get_posts', 'modify_product_cat_query', 900);
-
 /* Add additional fee based on weight */
 function weight_add_cart_fee() {
-
-    // Set here your percentage
-    $percentage = 0.3;
 
     if ( is_admin() && ! defined( 'DOING_AJAX' ) )
         return;
@@ -336,12 +355,34 @@ function weight_add_cart_fee() {
     // Get weight of all items in the cart
     $cart_weight = WC()->cart->get_cart_contents_weight();
 
-    // calculate the fee amount
-    $fee = $cart_weight * $percentage;
+    $args = array(
+            'post_type' => 'Weight'
+    );
+    $query = new WP_Query($args);
+    $fee = 0;
 
-    // If weight amount is not null, adds the fee calcualtion to cart
-    if ( !empty( $cart_weight ) ) {
-        WC()->cart->add_fee( __('Opłata za wagę paczki ('.$cart_weight.' kg): ', 'storefront'), $fee, false );
+    if($query->have_posts()) {
+        while($query->have_posts()) {
+            $query->the_post();
+            $firstThreshold = get_field('do_ilu_kilogramow_1');
+            $secondThreshold = get_field('do_ilu_kilogramow_2');
+            $thirdThreshold = get_field('do_ilu_kilogramow_3');
+
+            $firstFee = get_field('oplata_1');
+            $secondFee = get_field('oplata_2');
+            $thirdFee = get_field('oplata_3');
+            $fourthFee = get_Field('oplata_4');
+
+            if($cart_weight < $firstThreshold) $fee = $firstFee;
+            else if($cart_weight < $secondThreshold) $fee = $secondFee;
+            else if($cart_weight < $thirdThreshold) $fee = $thirdFee;
+            else $fee = $fourthFee;
+        }
+
+        // If weight amount is not null, adds the fee calcualtion to cart
+        if ( !empty( $cart_weight ) ) {
+            WC()->cart->add_fee( __('Opłata za wagę paczki ('.$cart_weight.' kg): ', 'storefront'), $fee, false );
+        }
     }
 }
 add_action( 'woocommerce_cart_calculate_fees','weight_add_cart_fee' );
