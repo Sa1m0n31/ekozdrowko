@@ -304,7 +304,7 @@ a {
 .landing {
     margin-top: 140px;
     width: 100%;
-    height: calc(100vh - 140px);
+    height: calc(100vw / 2.4);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -681,9 +681,9 @@ a {
 /* Paralax */
 
 .paralax {
-    background: url("./assets/images/img/trawa.jpg");
+    background: url("./assets/images/img/kawa.jpg");
     background-attachment: fixed;
-    background-size: auto;
+    background-size: 100%;
     height: 450px;
     display: flex;
     justify-content: center;
@@ -1309,7 +1309,7 @@ ol, ul {
     border-spacing: 0 50px;
 }
 
-.woocommerce-message {
+.woocommerce-message, .wfspb-gift-box {
     display: none !important;
 }
 
@@ -3001,9 +3001,7 @@ ins {
 
 @media(max-width: 700px) {
     .paralax {
-        background-image: url("./assets/images/img/paralax-mobile.jpg");
         height: 200px;
-        background-size: 150%;
     }
 
     .u-column1 h2, .u-column2 h2 {

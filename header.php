@@ -37,7 +37,11 @@
                 <!-- Desktop -->
                 <ul class="topMenu__menu">
                     <?php
-                    //echo get_product_subcategories_list( 'suplementy-diety' );
+                    function sortByCategoryName($a, $b) {
+                        if($a > $b) return 1;
+                        else return -1;
+                    }
+
                     $categories = get_terms( ['taxonomy' => 'product_cat', 'hide_empty' => false, 'parent' => 0] );
 
                     for($i=0; $i<sizeof($categories); $i++) {
@@ -53,6 +57,7 @@
                                         <ul class="menuItem__subcategories">
                                             <?php
                                             $subcategories = get_product_subcategories_list($categories[$i]->slug);
+                                            usort($subcategories, "sortByCategoryName");
                                             for($j=0; $j<sizeof($subcategories); $j++) {
                                                 ?>
                                                 <li class="menuSubcategoryItem"><?php echo $subcategories[$j]; ?></li>

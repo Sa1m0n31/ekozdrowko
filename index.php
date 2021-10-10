@@ -40,11 +40,17 @@ get_header(); ?>
                             <?php echo get_field('naglowek_mniejszy'); ?>
                         </h2>
 
-                        <button class="landing__cta raise">
-                            <a href="<?php echo get_field('link_do_buttona'); ?>">
-                                <?php echo get_field('napis_na_buttonie'); ?>
-                            </a>
-                        </button>
+                        <?php
+                            if(get_field('napis_na_buttonie')) {
+                                ?>
+                                <button class="landing__cta raise">
+                                    <a href="<?php echo get_field('link_do_buttona'); ?>">
+                                        <?php echo get_field('napis_na_buttonie'); ?>
+                                    </a>
+                                </button>
+                    <?php
+                            }
+                        ?>
                     </div>
 
                         <?php

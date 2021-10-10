@@ -76,10 +76,10 @@ if ( version_compare( get_bloginfo( 'version' ), '4.7.3', '>=' ) && ( is_admin()
  * Enqueue scripts and styles.
  */
 function storefront_scripts() {
-    wp_enqueue_style( 'css-mobile', get_template_directory_uri() . '/mobile.css?n=1', array(), _S_VERSION );
+    wp_enqueue_style( 'css-mobile', get_template_directory_uri() . '/mobile.css?n=2', array(), _S_VERSION );
     wp_enqueue_style( 'css-geowidget', 'https://geowidget.easypack24.net/css/easypack.css', array(), _S_VERSION );
 
-    wp_enqueue_script( 'main', get_template_directory_uri() . '/js/main.js?n=2', array('siema', 'jquery', 'gsap', 'geowidget', 'google-maps'), _S_VERSION, true );
+    wp_enqueue_script( 'main', get_template_directory_uri() . '/js/main.js?n=3', array('siema', 'jquery', 'gsap', 'geowidget', 'google-maps'), _S_VERSION, true );
     wp_enqueue_script( 'siema', get_template_directory_uri() . '/js/siema.js', null, null, true );
     wp_enqueue_script( 'jquery', get_template_directory_uri() . '/js/jquery.js', null, null, true );
     wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js', null, null, true );
@@ -361,6 +361,9 @@ function weight_add_cart_fee() {
     $query = new WP_Query($args);
     $fee = 0;
 
+    $chosen_methods = WC()->session->get( 'chosen_shipping_methods' );
+    $chosen_shipping = $chosen_methods[0];
+
     if($query->have_posts()) {
         while($query->have_posts()) {
             $query->the_post();
@@ -381,7 +384,7 @@ function weight_add_cart_fee() {
 
         // If weight amount is not null, adds the fee calcualtion to cart
         if ( !empty( $cart_weight ) ) {
-            WC()->cart->add_fee( __('Opłata za wagę paczki ('.$cart_weight.' kg): ', 'storefront'), $fee, false );
+            if($chosen_shipping != 'free_shipping:10') WC()->cart->add_fee( __('Opłata za wagę paczki ('.$cart_weight.' kg): ', 'storefront'), $fee, false );
         }
     }
 }
